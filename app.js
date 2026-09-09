@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const config = window.STUDIO_CONFIG || {
     instagramHandle: '@global.photoshoots',
     instagramUrl: 'https://www.instagram.com/global.photoshoots/#',
-    whatsappNumber: '919876543210',
+    whatsappNumber: '917557575514',
     whatsappPrefilledMessage: 'Hi Sudhir! I want to book an AI Photoshoot / Video with Global Photoshoots.',
     contactEmail: 'sudhir@globalphotoshoots.com',
     calendlyUrl: 'https://calendly.com',

@@ -130,7 +130,7 @@ HTML_CONTENT = """<!DOCTYPE html>
 
         <!-- WhatsApp Quick Connect -->
         <a 
-          href="https://wa.me/919876543210?text=Hi%20Sudhir!%20I%20am%20interested%20in%20an%20AI%20Photoshoot%20for%20my%20brand." 
+          href="https://wa.me/917557575514?text=Hi%20Sudhir!%20I%20am%20interested%20in%20an%20AI%20Photoshoot%20for%20my%20brand." 
           target="_blank" 
           rel="noopener noreferrer" 
           class="p-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-xl transition-colors"
@@ -181,13 +181,13 @@ HTML_CONTENT = """<!DOCTYPE html>
       </div>
       <div class="pt-4 border-t border-white/10 flex flex-col gap-3">
         <a 
-          href="https://wa.me/919876543210" 
+          href="https://wa.me/917557575514" 
           target="_blank" 
           rel="noopener noreferrer" 
           class="w-full flex items-center justify-center gap-2 py-3 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 rounded-xl font-semibold"
         >
           <i data-lucide="message-circle" class="w-4 h-4"></i>
-          <span>Chat on WhatsApp (+91 9876543210)</span>
+          <span>Chat on WhatsApp (+91 7557575514)</span>
         </a>
         <a 
           href="https://www.instagram.com/global.photoshoots/#" 
@@ -250,13 +250,13 @@ HTML_CONTENT = """<!DOCTYPE html>
         </a>
 
         <a 
-          href="https://wa.me/919876543210?text=Hi%20Sudhir!%20I%20saw%20Global%20Photoshoots%20and%20want%20to%20discuss%20a%20commercial%20AI%20shoot." 
+          href="https://wa.me/917557575514?text=Hi%20Sudhir!%20I%20saw%20Global%20Photoshoots%20and%20want%20to%20discuss%20a%20commercial%20AI%20shoot." 
           target="_blank" 
           rel="noopener noreferrer" 
           class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-xl text-base font-semibold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 transition-all"
         >
           <i data-lucide="message-circle" class="w-5 h-5 text-emerald-400"></i>
-          <span>WhatsApp Sudhir (+91 9876543210)</span>
+          <span>WhatsApp Sudhir (+91 7557575514)</span>
         </a>
 
         <a 
@@ -593,9 +593,9 @@ HTML_CONTENT = """<!DOCTYPE html>
                 <span>Book This Scope with Sudhir</span>
               </a>
               <div class="mt-2 text-center">
-                <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" class="text-[11px] text-emerald-400 hover:text-emerald-300 flex items-center justify-center gap-1">
+                <a href="https://wa.me/917557575514" target="_blank" rel="noopener noreferrer" class="text-[11px] text-emerald-400 hover:text-emerald-300 flex items-center justify-center gap-1">
                   <i data-lucide="message-circle" class="w-3 h-3"></i>
-                  <span>Or chat instantly on WhatsApp (+91 9876543210)</span>
+                  <span>Or chat instantly on WhatsApp (+91 7557575514)</span>
                 </a>
               </div>
             </div>
@@ -862,7 +862,7 @@ HTML_CONTENT = """<!DOCTYPE html>
 
           <div class="mt-8 pt-6 border-t border-white/10">
             <a 
-              href="https://wa.me/919876543210?text=Hi%20Sudhir!%20I%20want%20to%20book%20the%20Starter%20Lookbook%20Package%20($249)." 
+              href="https://wa.me/917557575514?text=Hi%20Sudhir!%20I%20want%20to%20book%20the%20Starter%20Lookbook%20Package%20($249)." 
               target="_blank" 
               rel="noopener noreferrer" 
               class="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-bold bg-white/5 hover:bg-white/10 text-white border border-white/10 transition-all"
@@ -925,7 +925,7 @@ HTML_CONTENT = """<!DOCTYPE html>
 
           <div class="mt-8 pt-6 border-t border-white/10">
             <a 
-              href="https://wa.me/919876543210?text=Hi%20Sudhir!%20I%20want%20to%20commission%20the%20Commercial%20Brand%20Package%20($599)." 
+              href="https://wa.me/917557575514?text=Hi%20Sudhir!%20I%20want%20to%20commission%20the%20Commercial%20Brand%20Package%20($599)." 
               target="_blank" 
               rel="noopener noreferrer" 
               class="w-full inline-flex items-center justify-center gap-2 py-3.5 rounded-xl text-xs font-bold bg-cyan-400 hover:bg-cyan-300 text-slate-950 transition-all shadow-lg shadow-cyan-400/30"
@@ -980,7 +980,7 @@ HTML_CONTENT = """<!DOCTYPE html>
 
           <div class="mt-8 pt-6 border-t border-white/10">
             <a 
-              href="https://wa.me/919876543210?text=Hi%20Sudhir!%20I%20am%20interested%20in%20the%20Omnichannel%20Enterprise%20Package%20($1,299)." 
+              href="https://wa.me/917557575514?text=Hi%20Sudhir!%20I%20am%20interested%20in%20the%20Omnichannel%20Enterprise%20Package%20($1,299)." 
               target="_blank" 
               rel="noopener noreferrer" 
               class="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-bold bg-white/5 hover:bg-white/10 text-white border border-white/10 transition-all"
@@ -1293,7 +1293,7 @@ HTML_CONTENT = """<!DOCTYPE html>
             class="flex-1 inline-flex items-center justify-center gap-2.5 py-4 px-6 rounded-xl font-bold text-sm bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-all shadow-lg shadow-emerald-500/25"
           >
             <i data-lucide="message-circle" class="w-5 h-5"></i>
-            <span>Send Brief on WhatsApp (+91 9876543210)</span>
+            <span>Send Brief on WhatsApp (+91 7557575514)</span>
           </button>
 
           <button 
@@ -1412,7 +1412,7 @@ HTML_CONTENT = """<!DOCTYPE html>
             <a href="https://www.instagram.com/global.photoshoots/#" target="_blank" rel="noopener noreferrer" class="p-2.5 rounded-xl bg-white/5 hover:bg-pink-600/20 text-slate-400 hover:text-pink-400 border border-white/5 transition-colors">
               <i data-lucide="instagram" class="w-4 h-4"></i>
             </a>
-            <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" class="p-2.5 rounded-xl bg-white/5 hover:bg-emerald-600/20 text-slate-400 hover:text-emerald-400 border border-white/5 transition-colors">
+            <a href="https://wa.me/917557575514" target="_blank" rel="noopener noreferrer" class="p-2.5 rounded-xl bg-white/5 hover:bg-emerald-600/20 text-slate-400 hover:text-emerald-400 border border-white/5 transition-colors">
               <i data-lucide="message-circle" class="w-4 h-4"></i>
             </a>
             <a href="mailto:sudhir@globalphotoshoots.com" class="p-2.5 rounded-xl bg-white/5 hover:bg-cyan-600/20 text-slate-400 hover:text-cyan-400 border border-white/5 transition-colors">
@@ -1444,9 +1444,9 @@ HTML_CONTENT = """<!DOCTYPE html>
               </a>
             </li>
             <li>
-              <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-emerald-400 transition-colors">
+              <a href="https://wa.me/917557575514" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-emerald-400 transition-colors">
                 <i data-lucide="message-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
-                <span>WhatsApp: +91 9876543210</span>
+                <span>WhatsApp: +91 7557575514</span>
               </a>
             </li>
             <li>
@@ -1473,7 +1473,7 @@ HTML_CONTENT = """<!DOCTYPE html>
   <div class="floating-dock">
     <!-- WhatsApp Floating Pulse Button -->
     <a 
-      href="https://wa.me/919876543210?text=Hi%20Sudhir!%20I%20am%20interested%20in%20an%20AI%20Photoshoot%20for%20my%20brand." 
+      href="https://wa.me/917557575514?text=Hi%20Sudhir!%20I%20am%20interested%20in%20an%20AI%20Photoshoot%20for%20my%20brand." 
       target="_blank" 
       rel="noopener noreferrer" 
       class="whatsapp-pulse w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 flex items-center justify-center shadow-2xl transition-all transform hover:scale-110 group"

@@ -10,8 +10,8 @@ const STUDIO_CONFIG = {
   instagramHandle: "@global.photoshoots",
   instagramUrl: "https://www.instagram.com/global.photoshoots/#",
   
-  // WhatsApp Contact (Enter your phone number with country code, e.g. "919876543210")
-  whatsappNumber: "919876543210", 
+  // WhatsApp Contact (Enter your phone number with country code, e.g. "917557575514")
+  whatsappNumber: "917557575514", 
   whatsappPrefilledMessage: "Hi Sudhir! I am interested in booking an AI Photoshoot / Video production campaign with Global Photoshoots.",
 
   // Email & Scheduling
