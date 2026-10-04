@@ -1334,7 +1334,7 @@ HTML_CONTENT = """<!DOCTYPE html>
             <i data-lucide="chevron-down" class="w-5 h-5 text-cyan-400 transition-transform duration-300"></i>
           </div>
           <div class="faq-answer hidden mt-3 text-sm text-slate-300 leading-relaxed border-t border-white/5 pt-3">
-            Yes! For custom garments, watches, or beauty packaging, we train lightweight LoRA adapter models directly on photos of your physical product. This guarantees 100% preservation of logos, fabric weave, seam stitching, and labels without hallucinated flaws.
+            Yes, because your product is never redrawn. You send real photos of it and I build the scene around that exact product &mdash; colour, shape, proportions, materials and label text carry across unchanged. You approve the first frame before the full set is made, and if anything comes out wrong, it gets redone.
           </div>
         </div>
 
@@ -1356,7 +1356,7 @@ HTML_CONTENT = """<!DOCTYPE html>
             <i data-lucide="chevron-down" class="w-5 h-5 text-cyan-400 transition-transform duration-300"></i>
           </div>
           <div class="faq-answer hidden mt-3 text-sm text-slate-300 leading-relaxed border-t border-white/5 pt-3">
-            Standard campaign deliveries are completed within 48 to 72 hours. If you have an urgent product launch or flash sale, our Rush Delivery option can deliver production-ready 8K master renders within 24 hours.
+            Standard campaign deliveries land in 24 to 48 hours, and the Trial pack is done in 24 hours. If you have a launch or a sale date that cannot move, Rush Delivery pulls it back to 24 hours for +30% on the order.
           </div>
         </div>
 
