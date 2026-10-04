@@ -167,11 +167,23 @@ document.addEventListener('DOMContentLoaded', () => {
     return `${curr.symbol}${converted.toLocaleString()}`;
   };
 
+  // The Indian price list is INR-native; older markup still carries USD-base figures in
+  // [data-usd-price]. Both are supported, and INR amounts are routed through the USD base
+  // so every number on the page is produced by the one formatPrice() implementation.
+  const inrToUsd = (inrAmount) => inrAmount / ((config.currencies.INR && config.currencies.INR.rate) || 85);
+  const formatFromInr = (inrAmount, currCode = activeCurrency) => formatPrice(inrToUsd(inrAmount), currCode);
+
   const updateAllPrices = () => {
     document.querySelectorAll('[data-usd-price]').forEach(el => {
       const usdVal = parseFloat(el.getAttribute('data-usd-price'));
       if (!isNaN(usdVal)) {
         el.textContent = formatPrice(usdVal, activeCurrency);
+      }
+    });
+    document.querySelectorAll('[data-inr-price]').forEach(el => {
+      const inrVal = parseFloat(el.getAttribute('data-inr-price'));
+      if (!isNaN(inrVal)) {
+        el.textContent = formatFromInr(inrVal, activeCurrency);
       }
     });
     if (typeof window.updateCalculator === 'function') {
@@ -234,7 +246,48 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 10. Savings Calculator (Multi-Currency reactive)
+  // 10. Production Cost Calculator (INR-native price list, multi-currency reactive)
+  //  Quoted from the same pack prices the Pricing section publishes, so the calculator
+  //  cannot drift away from what a client is actually invoiced.
+  const PACK_TIERS = [
+    { name: 'Trial',   images: 1,  clips: 0, price: 499 },
+    { name: 'Starter', images: 10, clips: 0, price: 2499 },
+    { name: 'Growth',  images: 30, clips: 1, price: 6999 },
+    { name: 'Scale',   images: 75, clips: 3, price: 17999 }
+  ];
+  const OVERFLOW_PER_IMAGE = 120;   // Studio Overflow, from INR 120/image
+  const OVERFLOW_MIN_IMAGES = 100;  // ...on a 100-image minimum order
+  const EXTRA_CLIP_INR = 1999;      // Add-on: extra video clip
+  const RUSH_MULTIPLIER = 1.3;      // Add-on: 24h rush, +30%
+
+  // Physical-studio benchmark. Deliberately the TOP of the verified Indian band (Delhi NCR
+  // studios quote INR 167-500 per image and INR 1,500-3,000 per clip) so the comparison is
+  // biased against us. No invented base fee, no inflated studio-day rate, no 90% claim.
+  const STUDIO_INR_PER_IMAGE = 400;
+  const STUDIO_INR_PER_CLIP = 3000;
+  const STUDIO_BOOKING_DAYS = 6;    // 5-7 day booking cycle, midpoint
+  const STUDIO_PRODUCTION_DAYS = 3; // brief, shoot, selects, retouch
+  const DELIVERY_DAYS = { standard: 2, rush: 1 }; // 24-48h standard, 24h on rush
+
+  // Smallest published pack that covers the requested image count, plus any clips beyond
+  // what that pack includes, plus the rush fee if rush was selected.
+  const quoteAiInr = (photos, clips, speed) => {
+    const tier = PACK_TIERS.find(t => photos <= t.images);
+    const overflowImages = Math.max(OVERFLOW_MIN_IMAGES, photos);
+    const base = tier ? tier.price : overflowImages * OVERFLOW_PER_IMAGE;
+    const extraClips = Math.max(0, clips - (tier ? tier.clips : 0));
+    const subtotal = base + extraClips * EXTRA_CLIP_INR;
+    const total = Math.round(speed === 'rush' ? subtotal * RUSH_MULTIPLIER : subtotal);
+
+    const parts = [tier ? tier.name + ' pack' : 'Studio Overflow, ' + overflowImages + ' images'];
+    if (extraClips > 0) {
+      parts.push(extraClips + ' extra clip' + (extraClips === 1 ? '' : 's')
+        + ' at ' + formatFromInr(EXTRA_CLIP_INR));
+    }
+    if (speed === 'rush') parts.push('24h rush +30%');
+    return { total, breakdown: parts.join(' + ') };
+  };
+
   const photosRange = document.getElementById('photosRange');
   const videosRange = document.getElementById('videosRange');
   const photosCountDisplay = document.getElementById('photosCountDisplay');
@@ -242,7 +295,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const traditionalCostDisplay = document.getElementById('traditionalCostDisplay');
   const aiCostDisplay = document.getElementById('aiCostDisplay');
   const netSavingsDisplay = document.getElementById('netSavingsDisplay');
+  const netSavingsLabel = document.getElementById('netSavingsLabel');
   const daysSavedDisplay = document.getElementById('daysSavedDisplay');
+  const calcRateNote = document.getElementById('calcRateNote');
   const speedButtons = document.querySelectorAll('.speed-toggle');
 
   let currentSpeed = 'standard';
@@ -255,18 +310,34 @@ document.addEventListener('DOMContentLoaded', () => {
     photosCountDisplay.textContent = `${photos} Photos`;
     videosCountDisplay.textContent = `${videos} ${videos === 1 ? 'Clip' : 'Clips'}`;
 
-    const traditionalUsd = Math.round(4200 + (photos * 160) + (videos * 1400));
-    let aiUsd = 120 + (photos * 16) + (videos * 80);
-    if (currentSpeed === 'rush') aiUsd += 80;
-    aiUsd = Math.round(aiUsd);
+    const { total: aiInr, breakdown } = quoteAiInr(photos, videos, currentSpeed);
+    const studioInr = (photos * STUDIO_INR_PER_IMAGE) + (videos * STUDIO_INR_PER_CLIP);
+    const netInr = studioInr - aiInr;
+    const deliveryDays = DELIVERY_DAYS[currentSpeed] || DELIVERY_DAYS.standard;
+    const daysSaved = Math.max(0, (STUDIO_BOOKING_DAYS + STUDIO_PRODUCTION_DAYS) - deliveryDays);
 
-    const netSavingsUsd = traditionalUsd - aiUsd;
-    const daysSaved = currentSpeed === 'rush' ? 24 : 21;
+    if (traditionalCostDisplay) traditionalCostDisplay.textContent = formatFromInr(studioInr);
+    if (aiCostDisplay) aiCostDisplay.textContent = formatFromInr(aiInr);
 
-    if (traditionalCostDisplay) traditionalCostDisplay.textContent = formatPrice(traditionalUsd);
-    if (aiCostDisplay) aiCostDisplay.textContent = formatPrice(aiUsd);
-    if (netSavingsDisplay) netSavingsDisplay.textContent = `+${formatPrice(netSavingsUsd)}`;
+    // Honest in both directions: on a 5-image job a studio really can come out cheaper,
+    // so the label and colour flip instead of showing a saving that does not exist.
+    const isSaving = netInr >= 0;
+    if (netSavingsDisplay) {
+      netSavingsDisplay.textContent = isSaving
+        ? `+${formatFromInr(netInr)}`
+        : `-${formatFromInr(Math.abs(netInr))}`;
+      netSavingsDisplay.classList.toggle('text-emerald-400', isSaving);
+      netSavingsDisplay.classList.toggle('text-amber-400', !isSaving);
+    }
+    if (netSavingsLabel) {
+      netSavingsLabel.textContent = isSaving ? 'Your Net Savings:' : 'Studio Is Cheaper By:';
+    }
     if (daysSavedDisplay) daysSavedDisplay.textContent = `~${daysSaved} Days Saved`;
+    if (calcRateNote) {
+      calcRateNote.textContent = `${breakdown}. Delivered in ${deliveryDays} `
+        + `${deliveryDays === 1 ? 'day' : 'days'}, product accuracy guaranteed, files yours `
+        + 'to use commercially with no per-listing fees.';
+    }
   };
 
   if (photosRange && videosRange) {
@@ -390,15 +461,29 @@ document.addEventListener('DOMContentLoaded', () => {
   const digitalProductBtns = document.querySelectorAll('.digital-product-btn');
 
   let selectedProductName = '';
-  let selectedProductUsd = 29;
+  let selectedProductInr = null;
+
+  // Price comes from data-product-price (INR) or the separately rendered price span in the
+  // same card, so updateAllPrices() can never overwrite the button's label text, and there
+  // is no stale hardcoded USD figure to fall back to.
+  const readProductInr = (btn) => {
+    const own = parseFloat(btn.getAttribute('data-product-price'));
+    if (!isNaN(own)) return own;
+    const rendered = parseFloat(btn.parentElement?.querySelector('[data-inr-price]')
+      ?.getAttribute('data-inr-price'));
+    return isNaN(rendered) ? null : rendered;
+  };
+
+  const selectedProductPriceText = () =>
+    selectedProductInr === null ? 'price on request' : formatFromInr(selectedProductInr);
 
   digitalProductBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       selectedProductName = btn.getAttribute('data-product') || 'Digital Asset';
-      selectedProductUsd = parseFloat(btn.getAttribute('data-usd-price')) || 29;
+      selectedProductInr = readProductInr(btn);
       if (modalProductTitle && modalProductPrice && productModal) {
         modalProductTitle.textContent = selectedProductName;
-        modalProductPrice.textContent = formatPrice(selectedProductUsd);
+        modalProductPrice.textContent = selectedProductPriceText();
         productModal.classList.remove('hidden');
       }
     });
@@ -420,7 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const subject = encodeURIComponent(`Digital product request — ${selectedProductName}`);
       const body = encodeURIComponent(
         `Hi Sudhir,\n\n` +
-        `I would like to purchase: ${selectedProductName} (${formatPrice(selectedProductUsd)}).\n\n` +
+        `I would like to purchase: ${selectedProductName} (${selectedProductPriceText()}).\n\n` +
         `Please send the payment link and I'll pay by UPI / card / PayPal.\n\n` +
         `My email address is the one this was sent from.`
       );
@@ -431,7 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (modalWhatsAppBtn) {
     modalWhatsAppBtn.addEventListener('click', () => {
-      const msg = encodeURIComponent(`Hi Sudhir! I want to buy your digital product: "${selectedProductName}" (${formatPrice(selectedProductUsd)}). Please share the download link!`);
+      const msg = encodeURIComponent(`Hi Sudhir! I want to buy your digital product: "${selectedProductName}" (${selectedProductPriceText()}). Please share the download link!`);
       window.open(`https://wa.me/${config.whatsappNumber}?text=${msg}`, '_blank');
       productModal.classList.add('hidden');
     });
@@ -471,7 +556,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const email = fieldVal('clientEmail', 'Not provided');
     const type = document.querySelector('input[name="projectType"]:checked')?.value || 'AI Photoshoot Campaign';
     const deliverables = fieldVal('deliverableCount', '25 Photos + 2 AI Video Clips');
-    const turnaround = fieldVal('turnaroundPreference', '48-72 Hours (Standard Production)');
+    const turnaround = fieldVal('turnaroundPreference', '24-48 Hours (Standard Production)');
     const details = fieldVal('projectDetails', 'Custom AI photoshoot campaign');
 
     return [

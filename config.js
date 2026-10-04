@@ -46,7 +46,7 @@ const STUDIO_CONFIG = {
   freeSampleOfferEnabled: true,
 
   // Supported Currencies & Exchange Rates (relative to USD)
-  defaultCurrency: "USD",
+  defaultCurrency: "INR",
   currencies: {
     USD: { symbol: "$", rate: 1, position: "prefix" },
     INR: { symbol: "₹", rate: 85, position: "prefix" },
