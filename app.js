@@ -17,17 +17,145 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // 1. Initialize Lucide Icons
+  // Lucide dropped brand icons (Instagram) from its icon set, so <i data-lucide="instagram">
+  // renders as nothing and spams the console. Run createIcons() first, then swap the
+  // leftover Instagram placeholders for inline SVG. Order matters: createIcons() would
+  // otherwise re-scan the injected SVGs and clobber them.
+  const inlineIcon = (selector, viewBox, shapes) => {
+    document.querySelectorAll(selector).forEach(el => {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', viewBox);
+      svg.setAttribute('fill', 'none');
+      svg.setAttribute('stroke', 'currentColor');
+      svg.setAttribute('stroke-width', '2');
+      svg.setAttribute('stroke-linecap', 'round');
+      svg.setAttribute('stroke-linejoin', 'round');
+      svg.setAttribute('aria-hidden', 'true');
+      el.className.split(/\s+/).forEach(c => {
+        if (c) svg.classList.add(c);
+      });
+      svg.innerHTML = shapes;
+      // replaceWith drops the original element, and with it the data-lucide
+      // attribute, so createIcons() never sees the icon it cannot resolve.
+      el.replaceWith(svg);
+    });
+  };
+
+  // Lucide dropped brand icons (Instagram) from its icon set, so <i data-lucide="instagram">
+  // renders as nothing and spams the console. Swap those placeholders for inline SVG
+  // BEFORE createIcons() runs.
+  inlineIcon(
+    '[data-lucide="instagram"]',
+    '0 0 24 24',
+    '<rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>' +
+      '<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>' +
+      '<line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>'
+  );
+
   if (window.lucide) {
     window.lucide.createIcons();
   }
 
-  // 2. Set Current Year
+// 2. Analytics (opt-in). No third-party script is loaded unless a Plausible
+  //   domain is set in config.js, so the site stays fully private by default.
+  if (config.analyticsDomain) {
+    const s = document.createElement('script');
+    s.defer = true;
+    s.dataset.domain = config.analyticsDomain;
+    s.src = 'https://plausible.io/js/script.js';
+    document.head.appendChild(s);
+  }
+
+  // 3. Lead-source attribution.
+  //   Every outbound link he distributes gets a ?src= tag (gbp, justdial, whatsapp-outreach,
+  //   instagram, referral). When someone lands and later enquires, that tag travels with the
+  //   brief, so he can see which channel actually produces money instead of guessing.
+  const qs = new URLSearchParams(window.location.search);
+  const leadSource = qs.get('src') || qs.get('utm_source') || document.referrer || 'direct';
+  window.LEAD_SOURCE = leadSource;
+  try {
+    sessionStorage.setItem('gp_lead_source', leadSource);
+  } catch (err) {
+    // Private browsing can block sessionStorage; the in-memory value still works.
+  }
+
+  // Surface it on the booking form so a prospect can see their enquiry is being attributed
+  // and, more importantly, so a human reading the inbox knows where it came from.
+  const sourceNote = document.getElementById('leadSourceNote');
+  if (sourceNote) {
+    sourceNote.textContent = `Reference: ${leadSource}`;
+    sourceNote.classList.remove('hidden');
+  }
+
+
+  // 4. Set Current Year
   const yearEl = document.getElementById('currentYear');
   if (yearEl) {
     yearEl.textContent = new Date().getFullYear();
   }
 
-  // 3. Currency Conversion Engine
+  // 5. Footer business address (drives trust and CAN-SPAM compliance)
+  const addressEl = document.getElementById('businessAddressLine');
+  const configPlaceholder = (v) => !v || /^REPLACE/i.test(v.trim());
+  if (addressEl && config.businessAddress && !configPlaceholder(config.businessAddress)) {
+    addressEl.textContent = config.businessAddress;
+  }
+  if (configPlaceholder(config.businessAddress)) {
+    // Never print a half-finished address to a prospect. Failing visibly here is
+    // better than shipping "REPLACE WITH YOUR REAL ADDRESS" onto a live page.
+    console.warn(
+      '[Global Photoshoots] config.businessAddress is still the placeholder. '
+      + 'Set a real postal address in config.js - Google Business Profile and Justdial '
+      + 'verify it, and CAN-SPAM requires it on outreach email.'
+    );
+  }
+
+  // 6. City/state for local SEO. Injected into the page so the location is in the
+  // rendered HTML, not just in a meta tag, which is what local ranking reads.
+  if (config.city && !configPlaceholder(config.city)) {
+    document.querySelectorAll('[data-city]').forEach(el => {
+      el.textContent = el.textContent.replace(/\{\{city\}\}/g, config.city);
+    });
+  }
+
+  // 7. Push the real address into the JSON-LD, so the structured data stops
+  // advertising the REPLACE placeholder once config.js is filled in.
+  document.querySelectorAll('script[type="application/ld+json"]').forEach(node => {
+    if (configPlaceholder(config.businessAddress)) return;
+    try {
+      const data = JSON.parse(node.textContent);
+      let touched = false;
+      const walk = (obj) => {
+        if (Array.isArray(obj)) { obj.forEach(walk); return; }
+        if (!obj || typeof obj !== 'object') return;
+        if (obj['@type'] === 'PostalAddress' && String(obj.streetAddress || '').startsWith('REPLACE')) {
+          // businessAddress is written for humans, with commas. schema.org wants
+          // the street alone in streetAddress, with city and region in their own
+          // fields, so cut everything from the city onwards.
+          const full = String(config.businessAddress).trim();
+          const city = (config.city || '').trim();
+          let street = full;
+          if (city) {
+            const at = full.toLowerCase().indexOf(city.toLowerCase());
+            if (at > 0) street = full.slice(0, at).replace(/[\s,·-]+$/, '');
+          }
+          // Drop a trailing "India" that survived the split.
+          street = street.replace(/[,·\s]+India$/i, '').trim();
+          obj.streetAddress = street || full;
+          obj.addressLocality = config.city || '';
+          obj.addressRegion = config.region || '';
+          touched = true;
+        }
+        Object.values(obj).forEach(walk);
+      };
+      walk(data);
+      if (touched) node.textContent = JSON.stringify(data, null, 2);
+    } catch (err) {
+      console.warn('Could not update the JSON-LD address:', err);
+    }
+  });
+
+  // 7. Currency Conversion Engine
   let activeCurrency = config.defaultCurrency || 'USD';
 
   const formatPrice = (usdAmount, currCode = activeCurrency) => {
@@ -60,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 4. Mobile Navigation Menu Toggle
+  // 8. Mobile Navigation Menu Toggle
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
   const mobileMenu = document.getElementById('mobileMenu');
   if (mobileMenuBtn && mobileMenu) {
@@ -74,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 5. Interactive Before/After Split Slider
+  // 9. Interactive Before/After Split Slider
   const sliderContainer = document.getElementById('beforeAfterSlider');
   const sliderBeforeContainer = document.getElementById('sliderBeforeContainer');
   const sliderHandle = document.getElementById('sliderHandle');
@@ -106,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 6. Savings Calculator (Multi-Currency reactive)
+  // 10. Savings Calculator (Multi-Currency reactive)
   const photosRange = document.getElementById('photosRange');
   const videosRange = document.getElementById('videosRange');
   const photosCountDisplay = document.getElementById('photosCountDisplay');
@@ -161,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.updateCalculator();
   }
 
-  // 7. Portfolio Filters
+  // 11. Portfolio Filters
   const filterBtns = document.querySelectorAll('.filter-btn');
   const portfolioItems = document.querySelectorAll('.portfolio-item');
 
@@ -182,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 8. Portfolio Lightbox
+  // 12. Portfolio Lightbox
   const portfolioData = {
     '1': {
       title: 'Neo-Couture Parisienne Spring Lookbook',
@@ -252,12 +380,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 9. Digital Product Modal
+  // 13. Digital Product Modal
   const productModal = document.getElementById('productModal');
   const closeModalBtn = document.getElementById('closeModalBtn');
   const modalProductTitle = document.getElementById('modalProductTitle');
   const modalProductPrice = document.getElementById('modalProductPrice');
-  const modalSimulatePayBtn = document.getElementById('modalSimulatePayBtn');
+  const modalEmailBtn = document.getElementById('modalEmailBtn');
   const modalWhatsAppBtn = document.getElementById('modalWhatsAppBtn');
   const digitalProductBtns = document.querySelectorAll('.digital-product-btn');
 
@@ -285,10 +413,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (modalSimulatePayBtn) {
-    modalSimulatePayBtn.addEventListener('click', () => {
-      alert(`Demo Checkout: Directing to payment for "${selectedProductName}" (${formatPrice(selectedProductUsd)}). To complete purchase immediately with instant download access, message Sudhir on Instagram or WhatsApp!`);
-      window.open(config.instagramUrl, '_blank');
+  // This used to fire a fake "Demo Checkout" alert and open Instagram. A prospect
+  // who clicks Buy and sees "Demo" does not buy, so requests go by email instead.
+  if (modalEmailBtn) {
+    modalEmailBtn.addEventListener('click', () => {
+      const subject = encodeURIComponent(`Digital product request — ${selectedProductName}`);
+      const body = encodeURIComponent(
+        `Hi Sudhir,\n\n` +
+        `I would like to purchase: ${selectedProductName} (${formatPrice(selectedProductUsd)}).\n\n` +
+        `Please send the payment link and I'll pay by UPI / card / PayPal.\n\n` +
+        `My email address is the one this was sent from.`
+      );
+      window.location.href = `mailto:${config.contactEmail}?subject=${subject}&body=${body}`;
       productModal.classList.add('hidden');
     });
   }
@@ -301,74 +437,165 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 10. Inquiry Brief Generator & Dual Dispatch (Instagram + WhatsApp)
+  // 14. Inquiry Brief Generator & Dispatch (Email + WhatsApp + Instagram)
   const shootForm = document.getElementById('shootInquiryForm');
-  const sendToInstagramBtn = document.getElementById('sendToInstagramBtn');
+  const sendToEmailBtn = document.getElementById('sendToEmailBtn');
   const sendToWhatsAppBtn = document.getElementById('sendToWhatsAppBtn');
+  const sendToInstagramBtn = document.getElementById('sendToInstagramBtn');
   const formSuccessToast = document.getElementById('formSuccessToast');
+  const formSuccessToastText = formSuccessToast?.querySelector('span');
+  const freeSampleOffer = document.getElementById('freeSampleOffer');
 
-  const generateBriefText = () => {
-    const name = document.getElementById('clientName')?.value || 'Client';
-    const contact = document.getElementById('clientContact')?.value || 'Not provided';
-    const type = document.querySelector('input[name="projectType"]:checked')?.value || 'AI Photoshoot';
-    const deliverables = document.getElementById('deliverableCount')?.value || '15-25 Photos';
-    const turnaround = document.getElementById('turnaroundPreference')?.value || '48 Hours';
-    const details = document.getElementById('projectDetails')?.value || 'Custom AI photoshoot campaign';
+  if (config.freeSampleOfferEnabled && freeSampleOffer) {
+    freeSampleOffer.classList.remove('hidden');
+    freeSampleOffer.classList.add('flex');
+  }
 
-    return `Hello Sudhir (@global.photoshoots)! I would like to book an AI Production shoot:
-- Client/Brand: ${name}
-- Contact: ${contact}
-- Production Scope: ${type}
-- Deliverables: ${deliverables}
-- Turnaround: ${turnaround}
-- Vision & Notes: ${details}`;
+  const fieldVal = (id, fallback) => {
+    const v = document.getElementById(id)?.value?.trim();
+    return v || fallback;
   };
 
-  const handleInquiryAction = (channel = 'instagram') => {
-    const brief = generateBriefText();
+  const currentLeadSource = () => {
+    if (window.LEAD_SOURCE) return window.LEAD_SOURCE;
+    try {
+      return sessionStorage.getItem('gp_lead_source') || 'direct';
+    } catch (err) {
+      return 'direct';
+    }
+  };
+
+  const generateBriefText = () => {
+    const name = fieldVal('clientName', 'Client');
+    const contact = fieldVal('clientContact', 'Not provided');
+    const email = fieldVal('clientEmail', 'Not provided');
+    const type = document.querySelector('input[name="projectType"]:checked')?.value || 'AI Photoshoot Campaign';
+    const deliverables = fieldVal('deliverableCount', '25 Photos + 2 AI Video Clips');
+    const turnaround = fieldVal('turnaroundPreference', '48-72 Hours (Standard Production)');
+    const details = fieldVal('projectDetails', 'Custom AI photoshoot campaign');
+
+    return [
+      'Hello Sudhir,',
+      '',
+      'I would like to book an AI production shoot. My brief:',
+      '',
+      `Client/Brand: ${name}`,
+      `Contact (WhatsApp/IG): ${contact}`,
+      `Email: ${email}`,
+      `Production Scope: ${type}`,
+      `Deliverables: ${deliverables}`,
+      `Turnaround: ${turnaround}`,
+      `How I found you: ${currentLeadSource()}`,
+      '',
+      'Vision & Notes:',
+      details,
+      '',
+      'Please confirm availability and pricing. Thank you.',
+    ].join('\n');
+  };
+
+  let toastTimer = null;
+  const showToast = (msg) => {
+    if (!formSuccessToast) return;
+    if (formSuccessToastText) formSuccessToastText.innerHTML = msg;
+    formSuccessToast.classList.remove('hidden');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => formSuccessToast.classList.add('hidden'), 8000);
+  };
+
+  const copyToClipboard = (text) => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(brief).catch(() => {});
+      navigator.clipboard.writeText(text).catch(() => {});
+    }
+  };
+
+  // If leadWebhook is configured, POST the lead so it lands in a sheet/CMS.
+  // Otherwise fall back to a pre-filled mailto: so nothing is ever lost.
+  const postLead = async (payload, brief) => {
+    if (!config.leadWebhook) return false;
+    try {
+      const res = await fetch(config.leadWebhook, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...payload, brief, submittedAt: new Date().toISOString() }),
+      });
+      return res.ok;
+    } catch (err) {
+      console.warn('Lead webhook failed, falling back to mailto:', err);
+      return false;
+    }
+  };
+
+  const handleEmailSubmit = async (e) => {
+    if (e) e.preventDefault();
+    if (!shootForm || !shootForm.reportValidity()) return;
+
+    const brief = generateBriefText();
+    const payload = {
+      name: fieldVal('clientName', ''),
+      contact: fieldVal('clientContact', ''),
+      email: fieldVal('clientEmail', ''),
+      projectType: document.querySelector('input[name="projectType"]:checked')?.value || '',
+      deliverables: fieldVal('deliverableCount', ''),
+      turnaround: fieldVal('turnaroundPreference', ''),
+      details: fieldVal('projectDetails', ''),
+      leadSource: currentLeadSource(),
+      page: window.location.href,
+      referrer: document.referrer || '',
+    };
+
+    const stored = await postLead(payload, brief);
+    copyToClipboard(brief);
+
+    if (!stored) {
+      const subject = encodeURIComponent(`New shoot brief — ${payload.name}`);
+      const href = `mailto:${config.contactEmail}?subject=${subject}&body=${encodeURIComponent(brief)}`;
+      window.location.href = href;
     }
 
-    if (formSuccessToast) {
-      formSuccessToast.classList.remove('hidden');
-      setTimeout(() => {
-        formSuccessToast.classList.add('hidden');
-      }, 7000);
-    }
+    showToast(
+      stored
+        ? '<strong>Brief received!</strong> Sudhir will reply to your email shortly.'
+        : '<strong>Brief ready in your email app.</strong> Hit send and Sudhir will reply shortly.'
+    );
+  };
 
+  if (shootForm) {
+    shootForm.addEventListener('submit', handleEmailSubmit);
+  }
+
+  if (sendToEmailBtn) {
+    sendToEmailBtn.addEventListener('click', handleEmailSubmit);
+  }
+
+  const handleChannelAction = (channel) => {
+    const brief = generateBriefText();
+    copyToClipboard(brief);
+    showToast('<strong>Brief copied to your clipboard.</strong> Paste it into the chat window that just opened.');
     setTimeout(() => {
       if (channel === 'whatsapp') {
-        const encodedMsg = encodeURIComponent(brief);
-        window.open(`https://wa.me/${config.whatsappNumber}?text=${encodedMsg}`, '_blank');
+        window.open(`https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(brief)}`, '_blank');
       } else {
         window.open(config.instagramUrl, '_blank');
       }
-    }, 400);
+    }, 500);
   };
-
-  if (sendToInstagramBtn) {
-    sendToInstagramBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      handleInquiryAction('instagram');
-    });
-  }
 
   if (sendToWhatsAppBtn) {
     sendToWhatsAppBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      handleInquiryAction('whatsapp');
+      handleChannelAction('whatsapp');
     });
   }
 
-  if (shootForm) {
-    shootForm.addEventListener('submit', (e) => {
+  if (sendToInstagramBtn) {
+    sendToInstagramBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      handleInquiryAction('instagram');
+      handleChannelAction('instagram');
     });
   }
 
-  // 11. FAQ Accordion
+  // 15. FAQ Accordion
   const faqItems = document.querySelectorAll('.faq-item');
   faqItems.forEach(item => {
     item.addEventListener('click', () => {

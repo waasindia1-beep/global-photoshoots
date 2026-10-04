@@ -8,7 +8,7 @@ required_ids = [
     'aiCostDisplay', 'netSavingsDisplay', 'daysSavedDisplay', 'lightboxModal',
     'closeLightboxBtn', 'lightboxImg', 'lightboxTitle', 'lightboxCategory',
     'lightboxDescription', 'productModal', 'closeModalBtn', 'modalProductTitle',
-    'modalProductPrice', 'modalSimulatePayBtn', 'modalWhatsAppBtn',
+    'modalProductPrice', 'modalEmailBtn', 'modalWhatsAppBtn',
     'shootInquiryForm', 'sendToInstagramBtn', 'sendToWhatsAppBtn',
     'formSuccessToast', 'currentYear'
 ]

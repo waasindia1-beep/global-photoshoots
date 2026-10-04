@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unsubscribe · Global Photoshoots</title>
+  <meta name="description" content="Unsubscribe from Global Photoshoots outreach emails." />
+  <meta name="robots" content="noindex, follow" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #07090e;
+      color: #e2e8f0;
+      font-family: 'Outfit', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+      padding: 24px;
+    }
+    .card {
+      max-width: 560px;
+      width: 100%;
+      background: #0f131f;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+    }
+    h1 {
+      font-size: 28px;
+      margin: 0 0 8px;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+    p { line-height: 1.65; font-size: 15px; color: #94a3b8; margin: 0 0 16px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #38bdf8;
+      color: #0b1220;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 14px 22px;
+      border-radius: 14px;
+      text-decoration: none;
+      border: 0;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn:hover { background: #7dd3fc; }
+    .alt {
+      display: block;
+      margin-top: 16px;
+      font-size: 13px;
+      color: #64748b;
+    }
+    .alt a { color: #38bdf8; }
+    .hr { height: 1px; background: rgba(255,255,255,0.07); margin: 28px 0; }
+    code {
+      background: rgba(255,255,255,0.06);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #7dd3fc;
+    }
+    .done {
+      display: none;
+      padding: 16px;
+      border-radius: 14px;
+      background: rgba(6, 78, 59, 0.35);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #6ee7b7;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Unsubscribe</h1>
+    <p>
+      You will never be emailed again from Global Photoshoots after this is done.
+      Your address is added to a permanent suppression list, so it is not kept anywhere
+      else or re-imported later.
+    </p>
+
+    <p>
+      Click the button below and your mail app will open with everything pre-filled —
+      just hit send.
+    </p>
+
+    <a class="btn" id="unsubBtn" href="#">
+      Unsubscribe me
+    </a>
+
+    <p class="alt">
+      Prefer to do it yourself? Email
+      <a href="mailto:sudhir@globalphotoshoots.com?subject=unsubscribe">sudhir@globalphotoshoots.com</a>
+      with the subject <code>unsubscribe</code>.
+    </p>
+
+    <div class="hr"></div>
+
+    <p style="font-size: 13px;">
+      Unsubscribe only stops outreach emails. It does not affect any active project or
+      agreement. If you have a shoot booked with Sudhir, your booking will go ahead
+      regardless — reply to that thread instead and it will not be affected.
+    </p>
+
+    <p style="font-size: 13px;">
+      Changed your mind and want to see the work? Everything is here:
+      <a href="/" style="color:#38bdf8">global-photoshoots.vercel.app</a>
+    </p>
+
+    <div class="done" id="doneMsg">
+      Your email app should now be open with the unsubscribe request ready to send.
+      Once you send it, you are removed permanently and will not hear from us again.
+    </div>
+  </main>
+
+  <script>
+    // No backend is wired up here yet, so the button hands the request off to the mail
+    // client. When leadWebhook is configured in config.js, swap this for a direct POST.
+    var btn = document.getElementById('unsubBtn');
+    var msg = document.getElementById('doneMsg');
+    btn.addEventListener('click', function () {
+      var body = 'Please remove this address from the Global Photoshoots outreach list.';
+      btn.href = 'mailto:sudhir@globalphotoshoots.com' +
+        '?subject=' + encodeURIComponent('unsubscribe') +
+        '&body=' + encodeURIComponent(body);
+      msg.style.display = 'block';
+    });
+  </script>
+</body>
+</html>

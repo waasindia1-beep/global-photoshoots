@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+
+# Build artifact - regenerate with the deploy packaging step, do not version it
+UPLOAD-THIS-TO-VERCEL.zip
+
+# Outreach credentials — never commit
+outreach/.env
+.env
+outreach/samples/*.key
+
+# Outreach run artefacts (local tracking, may contain recipient addresses)
+outreach/outreach_log.csv
+outreach/suppression.txt
+outreach/whatsapp_log.csv
+outreach/call_log.csv
+outreach/inbound_log.csv
