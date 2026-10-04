@@ -1,18 +1,17 @@
 Hi {company} team,
 
-I've been going through how {company} shows {hook} on your site and store.
+I saw {hook} on your site, and it made me think of a specific problem: new packaging goes
+live and the imagery has to catch up with it.
 
-I'm Sudhir - I run Global Photoshoots, an AI production studio. I make product and lifestyle
-imagery for brands: packshots, texture macros and model shots, delivered in 24-48 hours with
-full commercial rights, so you own every file outright.
+I'm Sudhir. I run Global Photoshoots. I build product and lifestyle imagery from the product
+photos you already have. Your product is the part that stays accurate: colour, shape,
+proportions and label text are kept exactly as they are, and the scene, lighting and
+background around it are what I generate. Nothing about the product itself is invented.
 
-Physical studios are usually 5-7 days out and need a booking. That's the bottleneck when new
-SKUs are sitting there waiting to go live.
+Turnaround is 24-48 hours. You own every file, with full commercial rights. If anything
+comes out wrong, I redo it.
 
-Would it be useful if I just built one free sample frame from your own products first? You keep
-it either way, and you'll know the quality before spending anything.
-
-Happy to send something today if you point me at your top 3 SKUs.
+So point me at one product and I'll send one frame free, before you spend anything.
 
 Sudhir
 Global Photoshoots | WhatsApp {phone}
@@ -22,14 +21,15 @@ Global Photoshoots | WhatsApp {phone}
 
 Hi {company} team,
 
-Following up once, then I'll leave you alone.
+Following up once, then I'll leave it there.
 
-The reason I'm emailing is specific, not generic: most brands I speak to are held up waiting on
-studio availability for new packaging. I deliver in 24-48 hours and can start from a few product
-photos you already have.
+The short version: I build images around your real product photos rather than starting from
+an empty background. Your product stays as it is - colour, shape and label text intact - in
+a scene I set up around it. 24-48 hours, full commercial rights, and anything that comes out
+wrong gets redone.
 
-If a sample frame would be useful, I'll build one from your catalogue at no cost. If not, no
-problem at all - just let me know and I'll close the file.
+If a sample frame is useful, send me one product photo and I'll build it at no cost. If it
+isn't, say so and I'll close the file.
 
 Sudhir
 Global Photoshoots | WhatsApp {phone}
@@ -39,13 +39,13 @@ Global Photoshoots | WhatsApp {phone}
 
 Hi {company} team,
 
-Last note from me, I promise.
+Last note from me.
 
-I'll close this out unless you'd like a free sample frame built from your products. No pitch
-attached, no follow-up sequence - just a single image so you can see whether the quality works
-for you.
+I'll close this out unless you want the free sample frame. No pitch attached, and no more
+emails after this one.
 
-If it's not a fit, tell me and I won't email again.
+If it is useful later, the offer is the same: one frame built from your own product photo,
+24-48 hours, every file yours with full commercial rights.
 
 Sudhir
 Global Photoshoots | WhatsApp {phone}

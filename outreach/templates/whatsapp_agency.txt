@@ -1,7 +1,9 @@
 {salutation}
 
-You already run {hook}. I'm not competing - I take overflow work white-label at 24-48h. Your client, your brand, your margin.
+Saw this on your site: {hook}. Not competing with you.
 
-Worth a free sample frame so you know I'm a credible backup?
+Overflow work from product photos you already have. Your client, your brand, your margin, 24-48 hours.
+
+Point me at one product and I'll send one frame free.
 
 {site}

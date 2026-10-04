@@ -1,17 +1,17 @@
 Hi {company} team,
 
-I've been looking at your listing images for {hook}.
+I looked at your listing images for {hook}.
 
-I'm Sudhir - I run Global Photoshoots, an AI production studio. I shoot marketplace-compliant
-product imagery: main images that meet Amazon and Flipkart specs, plus lifestyle and texture
-shots for the listing body and ads.
+I'm Sudhir. I run Global Photoshoots. I build marketplace-spec product images for Amazon,
+Flipkart and Myntra listings, working from the product photos you already have. Your product
+stays accurate - colour, shape, proportions and label text kept as they are - and I generate
+the background and lighting around it, so the listing shows what actually ships.
 
-The problem with physical studios is the queue. You need new compliant images when a new
-listing goes live, and most studios are 5-7 days out. I deliver in 24-48 hours and hand you
-every file with full commercial rights.
+Every main image is built to the current spec for that marketplace. Turnaround is
+24-48 hours, so a new SKU can go live this week rather than next. You own every file, full
+commercial rights, and if anything comes out wrong I redo it.
 
-If you point me at one product, I'll build one free compliant main image so you can check the
-quality against what you're using now.
+Point me at one product and I'll send one compliant main image free.
 
 Sudhir
 Global Photoshoots | WhatsApp {phone}
@@ -21,13 +21,14 @@ Global Photoshoots | WhatsApp {phone}
 
 Hi {company} team,
 
-Following up once about your product images.
+Following up once about your listing images.
 
-If your listings are live and the images are performing, ignore me. If you've been holding off
-because a shoot quote felt expensive or slow, that's exactly the gap I fill: marketplace-spec
-main images in 24-48 hours, from photos you already have, full commercial rights included.
+If your listings are live and selling, ignore me. If new SKUs are sitting waiting on images,
+or a listing was held back over image quality, this is the part I handle: spec-compliant
+main images built from photos you already have, delivered in 24-48 hours, with product
+colour and label text kept accurate so the listing matches what ships.
 
-I'll build one free main image for a product of your choice. You keep it either way.
+Send me one product photo and I'll do one main image free. You keep it either way.
 
 Sudhir
 Global Photoshoots | WhatsApp {phone}
@@ -39,8 +40,7 @@ Hi {company} team,
 
 Last one from me.
 
-I'll stop here. If a faster, cheaper compliant image is ever useful, I'm at the number below,
-and I'd rather help once than email you repeatedly.
+I'll stop here. If a compliant main image is ever needed quickly, I am on WhatsApp below.
 
 Sudhir
 Global Photoshoots | WhatsApp {phone}

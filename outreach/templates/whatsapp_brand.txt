@@ -1,7 +1,9 @@
 {salutation}
 
-I make AI product photos for brands: 24-48h delivery, full commercial rights, you own every file.
+Saw this on your site: {hook}.
 
-I saw {hook}. Can I send one free sample frame from your own products so you can judge the quality?
+I build the scene around your real product photos, so colour, shape and label text stay accurate. 24-48 hours, anything wrong gets redone.
+
+Point me at one product and I'll send one frame free.
 
 {site}
